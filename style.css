@@ -193,17 +193,17 @@ body {
 }
 
 .plate-circle {
-    width: 70vh; /* Responsive size */
-    height: 70vh;
-    max-width: 600px;
-    max-height: 600px;
+    width: 65vh; /* Reduced size to fit title */
+    height: 65vh;
+    max-width: 550px;
+    max-height: 550px;
     position: relative;
     /* Maintain aspect ratio */
     min-width: 300px;
     min-height: 300px;
     
-    /* Push down to avoid title overlap */
-    margin-top: 80px; 
+    /* Removed margin-top to center vertically with player areas */
+    /* margin-top: 80px; */ 
 }
 
 /* --- Center Status Panel (New) --- */
@@ -230,24 +230,27 @@ body {
     z-index: 5;
     padding: 20px;
     box-sizing: border-box;
+    gap: 8px; /* Use gap for even spacing */
 }
 
 .status-turn {
     font-size: 1.4rem;
-    margin-bottom: 5px; /* Reduced from 10px */
+    margin: 0; /* Remove margin for flex gap */
     font-weight: bold;
 }
 .status-main {
     font-size: 3rem; /* Timer or Big Number */
     font-family: 'Playfair Display', serif;
     color: var(--gold);
-    margin: 5px 0; /* Reduced from 10px 0 */
+    margin: 0; /* Remove margin for flex gap */
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    line-height: 1.1;
 }
 .status-sub {
     font-size: 0.9rem;
     color: #ccc;
     line-height: 1.4;
+    margin: 0;
 }
 
 
