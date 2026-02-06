@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dinner of Memory - 기억의 저녁식사</title>
+    <!-- New Fonts: Gowun Dodum for Korean, Playfair Display for Titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
+        <!-- Custom Modal Overlay -->
+        <div id="modal-overlay" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2 id="modal-title">알림</h2>
+                <div id="modal-body">내용</div>
+                <button id="modal-close-btn">확인</button>
+            </div>
+        </div>
+
         <!-- Player A (Left) -->
         <div class="player-area player-a">
             <div class="chips-container">

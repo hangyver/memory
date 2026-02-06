@@ -1,11 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Roboto:wght@400;700&display=swap');
+/* Reusing existing imports + new ones from HTML linking, 
+   but let's tidy up and apply the user's aesthetic requests */
+
+/* 
+ * FONTS 
+ * Title/Numbers: 'Playfair Display', serif (Classy)
+ * Text: 'Gowun Dodum', sans-serif (Clean Korean)
+ */
 
 :root {
-    --bg-color: #1a1a1a;
-    --grid-line: #333;
+    --bg-color: #0d0d0d;
     --player-a-color: #ff4444;
     --player-b-color: #44ff44;
-    --text-color: white;
+    --text-color: #f0f0f0;
+    --gold: #d4af37;
 }
 
 body {
@@ -17,7 +24,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Gowun Dodum', sans-serif; /* Default font */
     overflow: hidden;
     height: 100vh;
     display: flex;
@@ -28,69 +35,80 @@ body {
 .game-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    width: 90%;
-    max-width: 1200px;
-    height: 80vh;
+    align-items: center; /* Centered Vertically */
+    width: 95%;
+    max-width: 1400px;
+    height: 90vh;
     position: relative;
 }
 
-/* Player Areas */
+/* --- Player Areas --- */
 .player-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    width: 200px;
-    z-index: 10;
+    justify-content: center;
+    width: 250px;
+    transition: all 0.5s ease;
 }
 
 .player-avatar {
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0.9;
+    position: relative;
 }
 
 .avatar-head {
-    width: 60px;
-    height: 60px;
-    background: rgba(255,255,255,0.8);
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    margin-bottom: 5px;
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
-    /* Image Avatar */
+    margin-bottom: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
     background-size: cover;
     background-position: center;
-    border: 3px solid white;
-}
-
-.avatar-body {
-    /* Hidden body shapes logic, kept structure for layout but simplified */
-    width: 140px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.5rem;
-    color: white;
-    text-shadow: 0 0 5px black;
+    border: 3px solid rgba(255,255,255,0.7);
+    transition: all 0.3s;
 }
 
 .player-a .avatar-head {
     background-image: url('player_a.png');
-    border-color: var(--player-a-color);
+    border-color: #ff8888;
 }
 
 .player-b .avatar-head {
     background-image: url('player_b.png');
-    border-color: var(--player-b-color);
+    border-color: #88ff88;
 }
 
-/* Chips */
+.avatar-body {
+    /* Name Tag */
+    background: rgba(0, 0, 0, 0.7);
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Active Turn Highlight */
+.player-area.active .avatar-head {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px var(--gold);
+    border-color: var(--gold);
+}
+.player-area.active {
+    opacity: 1;
+}
+.player-area:not(.active) {
+    opacity: 0.6;
+    transform: scale(0.95);
+}
+
+
+/* --- Chips --- */
 .chips-container {
     margin-bottom: 20px;
     display: flex;
@@ -99,10 +117,11 @@ body {
 }
 
 .chip-count {
-    font-family: 'Black Ops One', cursive;
-    font-size: 2rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 0 #000;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .player-a .chip-count { color: var(--player-a-color); }
@@ -110,166 +129,255 @@ body {
 
 .chip-stack {
     display: flex;
-    flex-direction: column-reverse; /* Stack up */
-    gap: 2px;
+    flex-direction: column-reverse; /* Stack upwards */
+    gap: -5px; /* Slight overlap for realism */
+    min-height: 60px;
 }
 
 .chip {
-    width: 40px;
-    height: 12px;
+    width: 50px;
+    height: 15px;
     border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.5);
-    box-shadow: 0 2px 2px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.6);
+    position: relative;
 }
 
-.red .chip { background: var(--player-a-color); }
-.green .chip { background: var(--player-b-color); }
-.yellow .chip { background: #ffd700; border-color: #b8860b; }
+.red .chip { background: linear-gradient(to bottom, #ff5555, #cc0000); }
+.green .chip { background: linear-gradient(to bottom, #55ff55, #009900); }
+.yellow .chip { background: linear-gradient(to bottom, #ffd700, #b8860b); border-color: #ffeeb0; }
 
-/* Plate visual states */
-.plate.open {
-    background: #fff;
-    transform: scale(1.1);
-    box-shadow: 0 0 20px yellow;
-}
-
-.plate.selectable-match {
-    cursor: pointer;
-    box-shadow: 0 0 30px #00ff00, inset 0 0 20px #00ff00;
-    animation: pulse 1s infinite alternate;
-    z-index: 100;
-}
-
-@keyframes pulse {
-    from { transform: scale(1.1); }
-    to { transform: scale(1.2); }
-}
-
-.plate-content {
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.5rem;
-    color: #000;
-}
-
-/* Board Area */
+/* --- Board Area --- */
 .board-area {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -60%); /* Shift up slightly */
-    width: 600px;
-    height: 600px;
-    /* border: 1px dashed #555; debugging circle */
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .plate-circle {
+    width: 600px;
+    height: 600px;
     position: relative;
-    width: 100%;
-    height: 100%;
 }
 
+/* --- Center Status Panel (New) --- */
+.game-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    
+    /* Aesthetics */
+    background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent */
+    backdrop-filter: blur(5px);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.status-turn {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.status-main {
+    font-size: 3rem; /* Timer or Big Number */
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+.status-sub {
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+
+/* --- Plates --- */
 .plate-wrapper {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 60px; /* Plate width */
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Initial state, will be positioning in JS/inline-css */
+    width: 80px;
+    height: 80px;
+    margin-left: -40px; /* Center offset */
+    margin-top: -40px;
 }
 
 .plate {
-    width: 60px;
-    height: 40px;
-    background: #e0e0e0;
-    border-radius: 50% 50% 0 0; /* Dome shape */
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle at 30% 30%, #f0f0f0, #ccc);
+    border-radius: 50%; /* Perfect circle from top view */
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.5), inset 0 5px 10px rgba(255,255,255,0.5);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Drop shadow on table */
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 4px solid #fff; /* Rim */
+}
+
+.plate::before {
+    /* Inner depression */
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .plate:hover {
     transform: scale(1.1);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
 }
 
-.plate::after {
-    /* Handle */
+/* Lid / Closed State */
+.plate.closed {
+    /* Use a Cloche cover look? Or just dark? User wanted "put on plate and cover" */
+    background: radial-gradient(circle at 30% 30%, #666, #333); /* Metallic dark cover */
+    border-color: #444;
+}
+.plate.closed::before { box-shadow: none; } /* No depression on lid */
+
+.plate.closed::after {
+    /* Handle on top */
     content: '';
     position: absolute;
-    top: -5px;
-    width: 10px;
-    height: 6px;
-    background: #ccc;
-    border-radius: 5px 5px 0 0;
-}
-
-.plate-number {
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.2rem;
-    color: #333;
-    z-index: 2;
-    margin-top: 5px;
-}
-
-/* New Logic Styles */
-.game-status {
-    position: absolute;
-    top: 40%;
+    width: 12px;
+    height: 12px;
+    background: #222;
+    border-radius: 50%;
+    border: 2px solid #555;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-family: 'Black Ops One', cursive;
-    font-size: 1.5rem;
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px 20px;
-    border-radius: 10px;
+}
+
+.plate-lid-number {
+    position: absolute;
+    top: -25px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #ddd;
+    text-shadow: 0 1px 2px black;
     pointer-events: none;
-    width: 60%;
 }
 
-.plate.has-chips::after {
-    /* Hidden for real game play usually, but helpful for debug? keeping hidden for now */
-    content: ''; 
+/* Open State */
+.plate.open {
+    background: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+    z-index: 10;
+}
+.plate-content {
+    z-index: 2;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
 }
 
+/* Selectable for Match */
+.plate.selectable-match {
+    animation: glowPulse 1.5s infinite alternate;
+    border-color: #44ff44;
+}
+
+@keyframes glowPulse {
+    from { box-shadow: 0 0 10px #44ff44; transform: scale(1.1); }
+    to { box-shadow: 0 0 25px #44ff44; transform: scale(1.15); }
+}
+
+/* --- Chips Animation --- */
 @keyframes placeChip {
-    0% { transform: scale(1.5) translateY(-50px); opacity: 0; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
+    0% { transform: scale(2) translateY(-100px); opacity: 0; }
+    50% { transform: scale(1.5) translateY(0); opacity: 1; }
+    100% { transform: scale(1); }
 }
+.chip-placed { animation: placeChip 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-.chip-placed {
-    animation: placeChip 0.5s ease-out;
-}
 
-.plate.closed {
-    background: #555; /* Darker lid indicating closed */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
-    border: 2px solid #222;
-}
-
-.plate.closed .plate-number {
-    color: #aaa;
-}
-
-/* Highlight active player */
-.player-area.active {
+/* --- Custom Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
     opacity: 1;
-    transform: scale(1.05);
-    transition: all 0.3s;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+    transition: opacity 0.3s;
+}
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.player-area:not(.active) {
-    opacity: 0.5;
-    transform: scale(0.95);
+.modal-content {
+    background: #1a1a1a;
+    border: 1px solid var(--gold);
+    width: 400px;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    transform: translateY(0);
+    transition: transform 0.3s;
+}
+.modal-overlay.hidden .modal-content {
+    transform: translateY(20px);
+}
+
+.modal-content h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.modal-content #modal-body {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 30px;
+    white-space: pre-line; /* Handle line breaks */
+}
+
+.modal-content button {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 40px;
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
     transition: all 0.3s;
+    border-radius: 5px;
+}
+
+.modal-content button:hover {
+    background: var(--gold);
+    color: #000;
 }
