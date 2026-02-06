@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Messages
             msg_setup_complete: "준비 단계 완료!",
-            msg_setup_complete_desc: "이제 기억의 게임을 시작합니다.<br>각자 게임 토큰 10개를 받습니다.",
+            msg_setup_complete_desc: "이제 기억의 게임을 시작합니다.<br>각자 게임 토큰 10개를 받습니다.<br><br><b>같은 개수의 칩이 들어있는<br>접시 2개를 선택하세요!</b>",
             msg_match_success: "기억 일치!",
             msg_match_success_desc: "숫자가 일치합니다! ({val})<br>토큰을 넣을 접시를 선택해주세요.",
             msg_match_fail: "기억 불일치",
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Messages
             msg_setup_complete: "Setup Complete!",
-            msg_setup_complete_desc: "The game begins now.<br>Each player receives 10 Game Tokens.",
+            msg_setup_complete_desc: "The game begins now.<br>Each player receives 10 Game Tokens.<br><br><b>Select two plates with<br>the same number of chips!</b>",
             msg_match_success: "It's a Match!",
             msg_match_success_desc: "Numbers match! ({val})<br>Select a plate to place your token.",
             msg_match_fail: "Mismatch",
