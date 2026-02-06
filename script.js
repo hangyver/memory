@@ -12,11 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const translations = {
         ko: {
             title: "기억의 저녁식사",
-            turn_setup: "님의 차례 (칩 배치)",
+            turn_setup: "님의 차례",
+            setup_action: "칩 {n}개 배치",
+            chips_left_stat: "남은 칩: {n}",
             turn_play: "님의 차례",
             phase_setup: "준비 단계",
             phase_play: "게임 시작",
-            setup_prompt: "접시를 선택하여 칩을 숨기세요",
+            setup_prompt: "접시를 선택하세요",
             play_prompt: "두 개의 접시를 선택하세요",
             decision_prompt: "매칭 성공! 토큰을 넣을 접시를 선택하세요.",
             chips_left: "남은 칩",
@@ -60,11 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         en: {
             title: "Dinner of Memory",
-            turn_setup: "'s Turn (Hiding)",
+            turn_setup: "'s Turn",
+            setup_action: "Hide {n}",
+            chips_left_stat: "Left: {n}",
             turn_play: "'s Turn",
             phase_setup: "Setup Phase",
             phase_play: "Game Start",
-            setup_prompt: "Select a plate to hide chips",
+            setup_prompt: "Select a plate",
             play_prompt: "Select two plates to match",
             decision_prompt: "Match! Select a plate to add your token.",
             chips_left: "Chips Left",
@@ -543,8 +547,8 @@ document.addEventListener('DOMContentLoaded', () => {
            scoreBEl.textContent = state.setupChips.B;
            statusEl.innerHTML = `
                 <div class="status-turn"><span style="color:${state.currentTurn === 'A' ? '#ff4444' : '#44ff44'}">Player ${state.currentTurn}</span>${t('turn_setup')}</div>
-                <div class="status-main">${t('chips_left')}: ${state.setupChips[state.currentTurn]}</div>
-                <div class="status-sub">${t('setup_prompt')}</div>
+                <div class="status-main" style="font-size: 2.5rem;">${t('setup_action').replace('{n}', state.setupRound)}</div>
+                <div class="status-sub">${t('chips_left_stat').replace('{n}', state.setupChips[state.currentTurn])}<br>${t('setup_prompt')}</div>
            `;
         } else if (state.phase === 'PLAY') {
             scoreAEl.textContent = state.gameTokens.A;
