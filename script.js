@@ -60,24 +60,50 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTutorialStep = 0;
     const tutorialSteps = [
         {
-            title: "1단계: 기억의 준비 (Hiding)",
+            title: "1단계: 칩 숨기기 (Hiding Chips)",
             img: "tutorial_setup.png",
-            text: "두 플레이어가 번갈아 가며 1~9개의 칩을 접시에 숨깁니다.<br>상대방이 어디에 몇 개를 숨기는지 <b>잘 기억해야</b> 합니다!"
+            text: `
+                <div class="tut-ko">처음에 1개, 그 다음 2개, 3개... 마지막에 9개까지.<br>두 플레이어가 교대로 총 45개의 칩을 접시에 나누어 숨깁니다.</div>
+                <div class="tut-en">Players take turns hiding chips: starting with 1, then 2, up to 9.<br>A total of 45 chips will be hidden in the plates.</div>
+            `
         },
         {
-            title: "2단계: 매칭 (Matching)",
+            title: "2단계: 게임 시작 (Game Start)",
+            img: "tutorial_start.png",
+            text: `
+                <div class="tut-ko">모든 칩을 숨기고 나면, 각 플레이어는 <b>게임 토큰 10개</b>를 받습니다.<br>이제 기억의 저녁식사가 시작됩니다!</div>
+                <div class="tut-en">After hiding all chips, each player receives <b>10 Game Tokens</b>.<br>Now, the Dinner of Memory begins!</div>
+            `
+        },
+        {
+            title: "3단계: 매칭 성공 (Matching Success)",
             img: "tutorial_match.png", 
-            text: "60초 안에 두 개의 접시를 열어 숫자가 같은지 확인합니다.<br><b>일치하면 성공!</b> 기회는 한 번뿐입니다."
+            text: `
+                <div class="tut-ko">두 접시를 열어 숫자가 <b>같으면 성공!</b><br>선택한 두 접시 중 <b>원하는 한 곳</b>에 내 게임 토큰 1개를 넣습니다.<br>(내 토큰은 줄어들고, 접시 안의 칩은 늘어납니다)</div>
+                <div class="tut-en">If the numbers match, it's a <b>Success!</b><br>You place 1 Game Token into <b>one of the chosen plates</b>.<br>(Your tokens decrease, chips in the plate increase)</div>
+            `
         },
         {
-            title: "3단계: 토큰 배치 (Action)",
-            img: "tutorial_action.png",
-            text: "매칭에 성공하면 내 토큰 하나를 <b>접시에 추가</b>합니다.<br>토큰을 넣은 접시는 칩 개수가 변하므로, <b>바뀐 숫자를 기억</b>하세요!"
+            title: "4단계: 매칭 실패 (Matching Failure)",
+            img: "tutorial_fail.png",
+            text: `
+                <div class="tut-ko">두 접시의 숫자가 <b>다르면 실패!</b><br>패널티로 <b>게임 토큰 1개</b>를 추가로 받습니다.<br>(내 토큰이 늘어납니다 ㅠㅠ)</div>
+                <div class="tut-en">If the numbers differ, it's a <b>Failure!</b><br>You receive <b>1 Penalty Token</b>.<br>(Your token count increases :()</div>
+            `
         },
         {
-            title: "승리 조건 (Victory)",
+            title: "승리 조건 (Victory Condition)",
             img: "tutorial_win.png",
-            text: "내 토큰을 모두 <b>0개</b>로 만들면 <b>승리!</b><br>반대로 실수하여 토큰이 <b>20개</b>가 넘으면 <b>패배</b>합니다."
+            text: `
+                <div class="tut-ko">
+                    <b>승리(WIN):</b> 내 토큰을 모두 사용하여 <b>0개</b>가 되면 승리합니다!<br>
+                    <b>패배(LOSE):</b> 토큰이 쌓여서 <b>20개</b>가 되면 패배합니다.
+                </div>
+                <div class="tut-en">
+                    <b>WIN:</b> Use all your tokens to reach <b>0</b>.<br>
+                    <b>LOSE:</b> If you accumulate <b>20</b> tokens, you lose.
+                </div>
+            `
         }
     ];
 
