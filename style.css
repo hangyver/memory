@@ -427,10 +427,25 @@ body {
     transition: all 0.3s;
     border-radius: 5px;
 }
-
 .modal-content button:hover {
     background: var(--gold);
     color: #000;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+}
+
+/* Cancel Button specific styles */
+.modal-content button.cancel-btn {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+.modal-content button.cancel-btn:hover {
+    background: #ff4444;
+    color: #fff;
 }
 
 /* Top Controls (Tutorial + Lang) */

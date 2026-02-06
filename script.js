@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tutorial_btn: "게임 방법",
             lang_btn: "ENGLISH",
             reset_btn: "초기화",
+            modal_cancel: "취소",
             
             // Messages
             msg_setup_complete: "준비 단계 완료!",
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tutorial_btn: "How to Play",
             lang_btn: "한국어",
             reset_btn: "Reset",
+            modal_cancel: "Cancel",
 
             // Messages
             msg_setup_complete: "Setup Complete!",
@@ -239,7 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tutorialBtn.textContent = t('tutorial_btn');
         langBtn.textContent = t('lang_btn');
         resetBtn.textContent = t('reset_btn');
+        resetBtn.textContent = t('reset_btn');
         document.getElementById('modal-close-btn').textContent = t('modal_confirm');
+        document.getElementById('modal-cancel-btn').textContent = t('modal_cancel');
 
         // Font Adjustment
         const titleEl = document.getElementById('game-title');
@@ -275,11 +279,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const modalBtn = document.getElementById('modal-close-btn');
+    const modalCancelBtn = document.getElementById('modal-cancel-btn');
 
     let onModalClose = null;
+    let onModalCancel = null;
 
     modalBtn.addEventListener('click', () => {
+        if (onModalClose) {
+            const cb = onModalClose;
+            onModalClose = null; // Prevent double firing
+            // If it was a confirm dialog, we shouldn't trigger cancel
+            onModalCancel = null; 
+            cb();
+        }
         closeModal();
+    });
+
+    modalCancelBtn.addEventListener('click', () => {
+         if (onModalCancel) {
+             onModalCancel();
+         }
+         closeModal();
     });
 
     const langBtn = document.getElementById('lang-btn');
@@ -295,10 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Reset Game
+    // Reset Game
     resetBtn.addEventListener('click', () => {
-        if (confirm(currentLang === 'ko' ? "게임을 초기화하시겠습니까?" : "Reset the game?")) {
-            resetGame();
-        }
+        showConfirm(
+            currentLang === 'ko' ? "게임 초기화" : "Reset Game",
+            currentLang === 'ko' ? "정말로 게임을 초기화하시겠습니까?<br>현재 진행 상황이 사라집니다." : "Are you sure you want to reset?<br>Current progress will be lost.",
+            () => resetGame()
+        );
     });
 
     // ... (rest of vars)
@@ -364,18 +387,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Modal System ---
     function showModal(title, message, callback) {
         modalTitle.textContent = title;
-        modalBody.innerHTML = message; // Allow HTML for colors/bold
+        modalBody.innerHTML = message; 
         modalOverlay.classList.remove('hidden');
+        modalCancelBtn.style.display = 'none'; // Default: Hide Cancel
         onModalClose = callback;
+        onModalCancel = null;
+    }
+
+    function showConfirm(title, message, yesCallback, noCallback) {
+        modalTitle.textContent = title;
+        modalBody.innerHTML = message;
+        modalOverlay.classList.remove('hidden');
+        modalCancelBtn.style.display = 'block'; // Show Cancel
+        onModalClose = yesCallback;
+        onModalCancel = noCallback;
     }
 
     function closeModal() {
         modalOverlay.classList.add('hidden');
-        if (onModalClose) {
-            const cb = onModalClose;
-            onModalClose = null;
-            cb();
-        }
+        // Reset callbacks just in case
+        onModalClose = null;
+        onModalCancel = null;
     }
 
     // --- Core Interaction ---
