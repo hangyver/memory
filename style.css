@@ -45,7 +45,7 @@ body {
 /*Game Title */
 .main-title {
     position: absolute;
-    top: 10px; /* Moved higher up */
+    top: -20px; /* Moved up above the container's top edge */
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
