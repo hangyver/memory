@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modal_confirm: "확인",
             tutorial_btn: "게임 방법",
             lang_btn: "ENGLISH",
+            reset_btn: "초기화",
             
             // Messages
             msg_setup_complete: "준비 단계 완료!",
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modal_confirm: "OK",
             tutorial_btn: "How to Play",
             lang_btn: "한국어",
+            reset_btn: "Reset",
 
             // Messages
             msg_setup_complete: "Setup Complete!",
@@ -140,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Button Texts
         tutorialBtn.textContent = t('tutorial_btn');
         langBtn.textContent = t('lang_btn');
+        resetBtn.textContent = t('reset_btn');
         document.getElementById('modal-close-btn').textContent = t('modal_confirm');
 
         // Font Adjustment
@@ -180,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const langBtn = document.getElementById('lang-btn');
     const tutorialBtn = document.getElementById('tutorial-btn');
+    const resetBtn = document.getElementById('reset-btn');
     
     // ... (other vars)
 
@@ -187,6 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
     langBtn.addEventListener('click', () => {
         currentLang = currentLang === 'ko' ? 'en' : 'ko';
         updateLanguage();
+    });
+
+    // Reset Game
+    resetBtn.addEventListener('click', () => {
+        if (confirm(currentLang === 'ko' ? "게임을 초기화하시겠습니까?" : "Reset the game?")) {
+            resetGame();
+        }
     });
 
     // ... (rest of vars)
@@ -527,7 +538,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showModal(t('msg_game_over'), 
             `<span style="font-size:2em; color:var(--gold);">${t('msg_winner').replace('{winner}', winner)}</span><br>
-            ${message}`, null);
+            ${message}`, () => {
+                // Reset game on modal close
+                resetGame();
+            });
+        updateUI();
+    }
+
+    function resetGame() {
+        stopTimer();
+        state = {
+            phase: 'SETUP',
+            setupRound: 1,
+            currentTurn: 'A',
+            setupChips: { A: 45, B: 45 },
+            gameTokens: { A: 0, B: 0 }, 
+            plates: Array(TOTAL_PLATES).fill(null).map((_, i) => ({
+                id: i + 1,
+                count: 0,
+                isOpen: false,
+                isTemporaryOpen: false
+            })),
+            selectedPlates: [], 
+            matchedPlates: [], 
+            isProcessingResult: false,
+            timer: TURN_TIME_LIMIT,
+            timerInterval: null
+        };
+        
+        // Reset player visuals
+        playerAContainer.className = 'chip-stack red';
+        playerBContainer.className = 'chip-stack green';
+        
+        initBoard(); // Re-creates plates
         updateUI();
     }
 
