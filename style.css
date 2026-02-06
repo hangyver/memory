@@ -201,6 +201,9 @@ body {
     /* Maintain aspect ratio */
     min-width: 300px;
     min-height: 300px;
+    
+    /* Push down to avoid title overlap */
+    margin-top: 60px; 
 }
 
 /* --- Center Status Panel (New) --- */
