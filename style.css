@@ -234,14 +234,14 @@ body {
 
 .status-turn {
     font-size: 1.4rem;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced from 10px */
     font-weight: bold;
 }
 .status-main {
     font-size: 3rem; /* Timer or Big Number */
     font-family: 'Playfair Display', serif;
     color: var(--gold);
-    margin: 10px 0;
+    margin: 5px 0; /* Reduced from 10px 0 */
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 .status-sub {
