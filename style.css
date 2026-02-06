@@ -12,10 +12,10 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--bg-color);
-    background-image: 
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: var(--text-color);
     font-family: 'Roboto', sans-serif;
     overflow: hidden;
@@ -59,29 +59,35 @@ body {
     border-radius: 50%;
     margin-bottom: 5px;
     box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    /* Image Avatar */
+    background-size: cover;
+    background-position: center;
+    border: 3px solid white;
 }
 
 .avatar-body {
+    /* Hidden body shapes logic, kept structure for layout but simplified */
     width: 140px;
-    height: 100px;
-    background: rgba(255,255,255,0.8);
-    border-radius: 20% 20% 0 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    padding: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Black Ops One', cursive;
-    font-size: 3rem;
-    color: #000;
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 0 0 5px black;
 }
 
-.player-a .avatar-head, .player-a .avatar-body {
-    background: linear-gradient(180deg, #ffcccc, #ff8888);
-    color: #300;
+.player-a .avatar-head {
+    background-image: url('player_a.png');
+    border-color: var(--player-a-color);
 }
 
-.player-b .avatar-head, .player-b .avatar-body {
-    background: linear-gradient(180deg, #ccffcc, #88ff88);
-    color: #030;
+.player-b .avatar-head {
+    background-image: url('player_b.png');
+    border-color: var(--player-b-color);
 }
 
 /* Chips */
@@ -125,6 +131,18 @@ body {
     background: #fff;
     transform: scale(1.1);
     box-shadow: 0 0 20px yellow;
+}
+
+.plate.selectable-match {
+    cursor: pointer;
+    box-shadow: 0 0 30px #00ff00, inset 0 0 20px #00ff00;
+    animation: pulse 1s infinite alternate;
+    z-index: 100;
+}
+
+@keyframes pulse {
+    from { transform: scale(1.1); }
+    to { transform: scale(1.2); }
 }
 
 .plate-content {
