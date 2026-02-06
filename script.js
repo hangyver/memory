@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const TOTAL_PLATES = 20;
     const SETUP_ROUNDS = 9; 
     const START_GAME_TOKENS = 10;
+    const MAX_GAME_TOKENS = 20; // Defeat condition
     const TURN_TIME_LIMIT = 60; 
 
     // --- Game State ---
@@ -204,7 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="color:${player === 'A' ? '#ff4444' : '#44ff44'}">${player}</span>는 벌칙 토큰을 받습니다.`, 
                 () => {
                     state.gameTokens[player]++; 
-                    finalizeTurn();
+                    
+                    // Defeat Condition Check
+                    if (state.gameTokens[player] >= MAX_GAME_TOKENS) {
+                        endGame(player === 'A' ? 'B' : 'A', 'LOSE_LIMIT'); // Opponent wins
+                    } else {
+                        finalizeTurn();
+                    }
                 }
             );
         }
@@ -221,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.plates[index].count += 1; 
 
         if (state.gameTokens[player] <= 0) {
-            endGame(player);
+            endGame(player, 'WIN_ZERO');
             return;
         }
         
@@ -257,7 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 stopTimer();
                 showModal("시간 초과", "제한시간이 지났습니다!<br>벌칙 토큰을 받습니다.", () => {
                     state.gameTokens[state.currentTurn]++;
-                    finalizeTurn();
+                    
+                    if (state.gameTokens[state.currentTurn] >= MAX_GAME_TOKENS) {
+                        endGame(state.currentTurn === 'A' ? 'B' : 'A', 'LOSE_LIMIT');
+                    } else {
+                        finalizeTurn();
+                    }
                 });
             }
         }, 1000);
@@ -267,12 +279,21 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(state.timerInterval);
     }
 
-    function endGame(winner) {
+    function endGame(winner, reason) {
         stopTimer();
         state.phase = 'GAME_OVER';
+        
+        let message = "";
+        if (reason === 'WIN_ZERO') {
+            message = "모든 토큰을 제거했습니다!<br>완벽한 기억력입니다!";
+        } else {
+            const loser = winner === 'A' ? 'B' : 'A';
+            message = `${loser}의 토큰이 ${MAX_GAME_TOKENS}개가 되었습니다.<br>토큰 과부하로 패배했습니다!`;
+        }
+
         showModal("게임 종료!", 
             `<span style="font-size:2em; color:var(--gold);">Player ${winner} WIN!</span><br>
-            모든 토큰을 제거했습니다!`, null);
+            ${message}`, null);
         updateUI();
     }
 
