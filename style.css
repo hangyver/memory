@@ -45,11 +45,11 @@ body {
 /*Game Title */
 .main-title {
     position: absolute;
-    top: 5%; /* Moved down into view */
+    top: 10px; /* Moved higher up */
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
-    font-size: 4rem; /* Slightly larger */
+    font-size: 4rem;
     white-space: nowrap;
     z-index: 10;
     
@@ -203,7 +203,7 @@ body {
     min-height: 300px;
     
     /* Push down to avoid title overlap */
-    margin-top: 60px; 
+    margin-top: 80px; 
 }
 
 /* --- Center Status Panel (New) --- */
