@@ -1,65 +1,156 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Configuration ---
+    const TOTAL_PLATES = 20;
+    const TOTAL_ROUNDS = 9; // 1 to 9 chips
+    
+    // --- Game State ---
+    let state = {
+        phase: 'SETUP', // 'SETUP' or 'PLAY'
+        round: 1,       // Current chip count (1 to 9)
+        currentTurn: 'A', // 'A' or 'B'
+        scores: { A: 45, B: 45 }, // Chips remaining to place
+        plates: Array(20).fill(null).map((_, i) => ({
+            id: i + 1,
+            chips: 0,
+            owner: null,
+            isOpen: true
+        }))
+    };
+
+    // --- DOM Elements ---
     const plateCircle = document.getElementById('plate-circle');
-    const totalPlates = 20;
-    const radius = 250; // Radius of the circle in px
+    const statusEl = document.getElementById('game-status');
+    const scoreAEl = document.getElementById('score-a');
+    const scoreBEl = document.getElementById('score-b');
+    const areaA = document.querySelector('.player-a');
+    const areaB = document.querySelector('.player-b');
 
-    // Create 20 plates
-    for (let i = 1; i <= totalPlates; i++) {
-        createPlate(i);
+    // --- initialization ---
+    initBoard();
+    updateUI();
+
+    function initBoard() {
+        plateCircle.innerHTML = '';
+        const radius = 250;
+        const angleStep = 360 / TOTAL_PLATES;
+
+        for (let i = 1; i <= TOTAL_PLATES; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'plate-wrapper';
+            
+            // Positioning 0 at top (-90deg)
+            // Adjust so Plate 1 is slightly to the right
+            const simpleAngle = (i * angleStep) - (angleStep / 2);
+            const cssAngle = simpleAngle - 90;
+
+            const x = Math.cos(cssAngle * Math.PI / 180) * radius;
+            const y = Math.sin(cssAngle * Math.PI / 180) * radius;
+
+            wrapper.style.transform = `translate(${x}px, ${y}px)`;
+
+            const plate = document.createElement('div');
+            plate.className = 'plate';
+            plate.id = `plate-${i}`;
+            plate.innerHTML = `<span class="plate-number">${i}</span>`;
+            
+            plate.addEventListener('click', () => handlePlateClick(i));
+            wrapper.appendChild(plate);
+            plateCircle.appendChild(wrapper);
+        }
     }
 
-    function createPlate(number) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'plate-wrapper';
-        
-        // Calculate angle
-        // Plate 1 is at ~18 degrees (top rightish), Plate 20 is at ~-18 degrees (top leftish)
-        // Let's start from top ( -90 deg in CSS) and add offset
-        // 360 / 20 = 18 degrees per plate.
-        // If index 1 is at 9 degrees
-        // index 2 is at 27 degrees...
-        // Formula: angle = (number * 18) - 9 (to center the gap at top)
-        // Wait, looking at image:
-        // Top gap is between 20 and 1.
-        // So 20 is at ~351 deg, 1 is at ~9 deg. (0 is straight up for now)
-        
-        const angleStep = 360 / totalPlates;
-        // Adjusting starting angle so 1 is slightly right of top
-        const angleDeg = (number * angleStep) - 90 - (angleStep / 2); 
-        // -90 to rotate so 0 is top. 
-        // - (angleStep/2) to shift so 1 is at 9 degrees (since i=1 gives 18, we want 9? No.)
-        
-        // Let's try: i=1 -> 18 deg. We want it at 9 deg?
-        // If 0 is top. 
-        // i=1 -> 9 deg
-        // i=2 -> 27 deg
-        // ...
-        // i=20 -> 351 deg (-9 deg)
-        // Formula: (i * 18) - 9
-        
-        const simpleAngle = (number * angleStep) - (angleStep / 2);
-        // Correct for CSS logic where 0 is Right. 
-        // We want 0 (Top) to be -90.
-        const cssAngle = simpleAngle - 90;
+    // --- Core Logic ---
 
-        const x = Math.cos(cssAngle * Math.PI / 180) * radius;
-        const y = Math.sin(cssAngle * Math.PI / 180) * radius;
+    function handlePlateClick(plateId) {
+        if (state.phase !== 'SETUP') return;
 
-        wrapper.style.transform = `translate(${x}px, ${y}px)`;
+        const plateIndex = plateId - 1;
+        const plateData = state.plates[plateIndex];
 
-        const plate = document.createElement('div');
-        plate.className = 'plate';
-        plate.innerHTML = `<span class="plate-number">${number}</span>`;
-        
-        plate.addEventListener('click', () => handlePlateClick(number));
+        // Validation: Must be an empty plate
+        if (plateData.chips > 0) {
+            alert("이미 칩이 있는 접시입니다! 비어있는 접시를 선택하세요.");
+            return;
+        }
 
-        wrapper.appendChild(plate);
-        plateCircle.appendChild(wrapper);
+        // Logic: Place chips
+        const chipsToPlace = state.round;
+        const currentPlayer = state.currentTurn;
+
+        // Update State
+        state.plates[plateIndex].chips = chipsToPlace;
+        state.plates[plateIndex].owner = currentPlayer;
+        state.plates[plateIndex].isOpen = false; // Close it immediately after placing
+        state.scores[currentPlayer] -= chipsToPlace; // Deduct from pile
+
+        // Visual Feedback
+        animatePlacement(plateId, currentPlayer, chipsToPlace);
+        updatePlateVisual(plateId);
+
+        // Advance Turn
+        advanceTurn();
+        updateUI();
     }
 
-    function handlePlateClick(number) {
-        console.log(`Plate ${number} clicked`);
-        // Logic will be added here
-        alert(`Plate ${number} selected! Needs game rules.`);
+    function advanceTurn() {
+        // Sequence: A -> B -> Next Round A -> Next Round B ...
+        if (state.currentTurn === 'A') {
+            state.currentTurn = 'B';
+        } else {
+            // End of round for this number
+            state.currentTurn = 'A';
+            state.round++;
+            
+            if (state.round > TOTAL_ROUNDS) {
+                state.phase = 'PLAY';
+                // Trigger next phase logic here later
+                alert("모든 칩 배치가 끝났습니다! 이제 게임이 시작됩니다. (다음 단계 구현 예정)");
+            }
+        }
+    }
+
+    // --- UI Updates ---
+
+    function updateUI() {
+        // Scores (Remaining Chips in Setup Phase)
+        scoreAEl.textContent = state.scores.A;
+        scoreBEl.textContent = state.scores.B;
+
+        // Active Player Highlight
+        if (state.currentTurn === 'A') {
+            areaA.classList.add('active');
+            areaB.classList.remove('active');
+        } else {
+            areaA.classList.remove('active');
+            areaB.classList.add('active');
+        }
+
+        // Status Text
+        if (state.phase === 'SETUP') {
+            const playerColor = state.currentTurn === 'A' ? 'red' : 'green';
+            const playerName = state.currentTurn === 'A' ? 'PLAYER A' : 'PLAYER B';
+            statusEl.innerHTML = `
+                <span style="color:${state.currentTurn === 'A' ? '#ff4444' : '#44ff44'}">${playerName}</span>의 차례<br>
+                칩 <span style="font-size: 1.5em; color: yellow;">${state.round}</span>개를 숨길 접시를 선택하세요.
+            `;
+        } else {
+            statusEl.textContent = "게임 시작! (규칙 대기 중)";
+        }
+    }
+
+    function updatePlateVisual(plateId) {
+        const plateIndex = plateId - 1;
+        const plateData = state.plates[plateIndex];
+        const plateEl = document.getElementById(`plate-${plateId}`);
+
+        if (!plateData.isOpen) {
+            plateEl.classList.add('closed');
+            // Maybe animate lid closing
+        }
+    }
+
+    function animatePlacement(plateId, player, amount) {
+        // Simple console log for now, or subtle animation class
+        console.log(`${player} placed ${amount} on plate ${plateId}`);
     }
 });
