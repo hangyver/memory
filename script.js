@@ -48,6 +48,44 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal();
     });
 
+    // Tutorial Elements
+    const tutorialBtn = document.getElementById('tutorial-btn');
+    const tutorialOverlay = document.getElementById('tutorial-overlay');
+    const tutorialSlidesContainer = document.querySelector('.tutorial-slides');
+    const prevStepBtn = document.getElementById('prev-step-btn');
+    const nextStepBtn = document.getElementById('next-step-btn');
+    const closeTutorialBtn = document.getElementById('close-tutorial-btn');
+    const stepIndicator = document.getElementById('step-indicator');
+
+    let currentTutorialStep = 0;
+    const tutorialSteps = [
+        {
+            title: "1단계: 기억의 준비 (Hiding)",
+            img: "tutorial_setup.png",
+            text: "두 플레이어가 번갈아 가며 1~9개의 칩을 접시에 숨깁니다.<br>상대방이 어디에 몇 개를 숨기는지 <b>잘 기억해야</b> 합니다!"
+        },
+        {
+            title: "2단계: 매칭 (Matching)",
+            img: "tutorial_match.png", 
+            text: "60초 안에 두 개의 접시를 열어 숫자가 같은지 확인합니다.<br><b>일치하면 성공!</b> 기회는 한 번뿐입니다."
+        },
+        {
+            title: "3단계: 토큰 배치 (Action)",
+            img: "tutorial_action.png",
+            text: "매칭에 성공하면 내 토큰 하나를 <b>접시에 추가</b>합니다.<br>토큰을 넣은 접시는 칩 개수가 변하므로, <b>바뀐 숫자를 기억</b>하세요!"
+        },
+        {
+            title: "승리 조건 (Victory)",
+            img: "tutorial_win.png",
+            text: "내 토큰을 모두 <b>0개</b>로 만들면 <b>승리!</b><br>반대로 실수하여 토큰이 <b>20개</b>가 넘으면 <b>패배</b>합니다."
+        }
+    ];
+
+    tutorialBtn.addEventListener('click', openTutorial);
+    prevStepBtn.addEventListener('click', () => changeTutorialStep(-1));
+    nextStepBtn.addEventListener('click', () => changeTutorialStep(1));
+    closeTutorialBtn.addEventListener('click', closeTutorial);
+
     // --- Initialization ---
     initBoard();
     updateUI();
@@ -277,6 +315,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function stopTimer() {
         clearInterval(state.timerInterval);
+    }
+
+    // --- Tutorial Functions ---
+    function openTutorial() {
+        currentTutorialStep = 0;
+        renderTutorial();
+        tutorialOverlay.classList.remove('hidden');
+    }
+
+    function closeTutorial() {
+        tutorialOverlay.classList.add('hidden');
+    }
+
+    function renderTutorial() {
+        tutorialSlidesContainer.innerHTML = '';
+        const step = tutorialSteps[currentTutorialStep];
+
+        const slide = document.createElement('div');
+        slide.className = 'tutorial-slide active';
+        slide.innerHTML = `
+            <img src="${step.img}" class="tutorial-img" alt="Step Image">
+            <div class="tutorial-text">
+                <h3>${step.title}</h3>
+                <p>${step.text}</p>
+            </div>
+        `;
+        tutorialSlidesContainer.appendChild(slide);
+        
+        stepIndicator.textContent = `${currentTutorialStep + 1} / ${tutorialSteps.length}`;
+
+        // Button States
+        prevStepBtn.style.display = currentTutorialStep === 0 ? 'none' : 'block';
+        if (currentTutorialStep === tutorialSteps.length - 1) {
+            nextStepBtn.style.display = 'none';
+            closeTutorialBtn.style.display = 'block';
+        } else {
+            nextStepBtn.style.display = 'block';
+            closeTutorialBtn.style.display = 'none';
+        }
+    }
+
+    function changeTutorialStep(direction) {
+        currentTutorialStep += direction;
+        if (currentTutorialStep < 0) currentTutorialStep = 0;
+        if (currentTutorialStep >= tutorialSteps.length) currentTutorialStep = tutorialSteps.length - 1;
+        renderTutorial();
     }
 
     function endGame(winner, reason) {

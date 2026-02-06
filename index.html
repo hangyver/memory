@@ -10,12 +10,31 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- New: How to Play Button -->
+        <button id="tutorial-btn" class="tutorial-btn">게임 방법</button>
+
         <!-- Custom Modal Overlay -->
         <div id="modal-overlay" class="modal-overlay hidden">
             <div class="modal-content">
                 <h2 id="modal-title">알림</h2>
                 <div id="modal-body">내용</div>
                 <button id="modal-close-btn">확인</button>
+            </div>
+        </div>
+        
+        <!-- Tutorial Modal (Separate to allow simpler content swapping or distinct style) -->
+        <div id="tutorial-overlay" class="modal-overlay hidden">
+            <div class="modal-content tutorial-content">
+                <h2>게임 방법</h2>
+                <div class="tutorial-slides">
+                    <!-- Dynamic Content -->
+                </div>
+                <div class="tutorial-controls">
+                    <button id="prev-step-btn" style="display:none;">이전</button>
+                    <span id="step-indicator">1 / 4</span>
+                    <button id="next-step-btn">다음</button>
+                    <button id="close-tutorial-btn" style="display:none;">닫기</button>
+                </div>
             </div>
         </div>
 
