@@ -382,11 +382,17 @@ body {
     color: #000;
 }
 
-/* Tutorial Button */
-.tutorial-btn {
+/* Top Controls (Tutorial + Lang) */
+.top-controls {
     position: absolute;
     top: 20px;
     right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.control-btn {
     background: rgba(0,0,0,0.5);
     border: 1px solid var(--gold);
     color: var(--gold);
@@ -395,13 +401,17 @@ body {
     cursor: pointer;
     font-family: 'Gowun Dodum', sans-serif;
     font-weight: bold;
-    z-index: 100;
     transition: all 0.3s;
 }
 
-.tutorial-btn:hover {
+.control-btn:hover {
     background: var(--gold);
     color: #000;
+}
+
+/* English Font Class */
+.font-en {
+    font-family: 'Playfair Display', serif !important;
 }
 
 /* Tutorial Modal Specifics */
