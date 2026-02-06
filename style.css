@@ -118,6 +118,20 @@ body {
 
 .red .chip { background: var(--player-a-color); }
 .green .chip { background: var(--player-b-color); }
+.yellow .chip { background: #ffd700; border-color: #b8860b; }
+
+/* Plate visual states */
+.plate.open {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px yellow;
+}
+
+.plate-content {
+    font-family: 'Black Ops One', cursive;
+    font-size: 1.5rem;
+    color: #000;
+}
 
 /* Board Area */
 .board-area {
