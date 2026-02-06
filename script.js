@@ -227,26 +227,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const wrapper = document.createElement('div');
             wrapper.className = 'plate-wrapper';
             
-            // Positioning Logic
-            const simpleAngle = (i * angleStep) - (angleStep / 2);
-            const cssAngle = simpleAngle - 90;
-            const x = Math.cos(cssAngle * Math.PI / 180) * radius;
-            const y = Math.sin(cssAngle * Math.PI / 180) * radius;
-
-            wrapper.style.transform = `translate(${x}px, ${y}px)`;
-
             // Number Positioning (Radial Outward)
-            // Scale distance based on plate size/radius roughly
-            const numDist = radius * 0.28; // Relative distance
-            const numRad = cssAngle * Math.PI / 180;
-            const numX = Math.cos(numRad) * numDist;
-            const numY = Math.sin(numRad) * numDist;
-
+            // Scale number distance relative to radius, but account for plate scaling
+            // We'll trust updateBoardPositions to finalize transforms, but set initial here
+            // actually, let's just create elements here and let updateBoardPositions handle the layout
+            // to avoid duplication logic.
             const plate = document.createElement('div');
             plate.className = 'plate';
             plate.id = `plate-${i}`;
             plate.innerHTML = `
-                <span class="plate-lid-number" style="transform: translate(-50%, -50%) translate(${numX}px, ${numY}px);">${i}</span>
+                <span class="plate-lid-number">${i}</span>
                 <span class="plate-content" style="display:none;">0</span>
             `;
             
@@ -254,6 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.appendChild(plate);
             plateCircle.appendChild(wrapper);
         }
+        
+        // Finalize layout
+        updateBoardPositions();
     }
 
     // --- Modal System ---
@@ -629,9 +622,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateBoardPositions() {
+        // Calculate max radius within container, leaving space for plates (approx 40px radius) + padding
         const containerSize = Math.min(plateCircle.clientWidth, plateCircle.clientHeight) || 600;
-        const radius = (containerSize / 2) * 0.85; 
+        const wrapperBaseSize = 80; // from CSS
+        const padding = 10;
+        
+        // We want the center of plates to be on the circle.
+        // Radius = (Container/2) - (HalfWrapper) - Padding
+        const radius = (containerSize / 2) - (wrapperBaseSize / 2) - padding;
+        
         const angleStep = 360 / TOTAL_PLATES;
+        
+        // Calculate dynamic scale to prevent overlap
+        const circumference = 2 * Math.PI * radius;
+        const arcPerPlate = circumference / TOTAL_PLATES;
+        const gap = 5; // minimum gap pixels
+        const maxWrapperSize = arcPerPlate - gap;
+        
+        // Calculate scale (default wrapper is 80px)
+        let scale = maxWrapperSize / wrapperBaseSize;
+        if (scale > 1) scale = 1; // Don't upscale, just shrink if needed
         
         const wrappers = document.querySelectorAll('.plate-wrapper');
         wrappers.forEach((wrapper, index) => {
@@ -640,15 +650,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const cssAngle = simpleAngle - 90;
             const x = Math.cos(cssAngle * Math.PI / 180) * radius;
             const y = Math.sin(cssAngle * Math.PI / 180) * radius;
-            wrapper.style.transform = `translate(${x}px, ${y}px)`;
+            
+            // Apply translation AND scale
+            wrapper.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
 
             // Update Number Position
-            const numDist = radius * 0.28;
+            // The number is inside the scaled wrapper. 
+            // If we want the number to appear freely outside, we need to counter-scale or position it carefully.
+            // With scale, 100px inside become 100*scale px visual.
+            // We want the number to be ~65px visual distance from center of plate.
+            // So we need to set distance to 65 / scale.
+            
+            const visualDist = 65; 
+            const internalDist = visualDist / scale;
+            
             const numRad = cssAngle * Math.PI / 180;
-            const numX = Math.cos(numRad) * numDist;
-            const numY = Math.sin(numRad) * numDist;
+            const numX = Math.cos(numRad) * internalDist;
+            const numY = Math.sin(numRad) * internalDist;
+            
             const lidNum = wrapper.querySelector('.plate-lid-number');
             if (lidNum) {
+                // Ensure number text size doesn't get too tiny? 
+                // 2rem * 0.7 is still readable.
                 lidNum.style.transform = `translate(-50%, -50%) translate(${numX}px, ${numY}px)`;
             }
         });
