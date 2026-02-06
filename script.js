@@ -118,6 +118,102 @@ document.addEventListener('DOMContentLoaded', () => {
         return translations[currentLang][key] || key;
     }
 
+    // --- Sound Manager (Web Audio API) ---
+    const SoundManager = {
+        ctx: new (window.AudioContext || window.webkitAudioContext)(),
+        
+        playTone(freq, type, duration, vol = 0.1) {
+            if (this.ctx.state === 'suspended') this.ctx.resume();
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+        },
+
+        playClick() {
+            // High pitched short 'pop'
+            this.playTone(800, 'sine', 0.1, 0.05);
+        },
+
+        playChip() {
+            // Lower 'thud'
+            this.playTone(300, 'triangle', 0.15, 0.1);
+        },
+        
+        playMatchSuccess() {
+            // Major Triad Arpeggio (C E G)
+            const now = this.ctx.currentTime;
+            [523.25, 659.25, 783.99].forEach((freq, i) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, now + i*0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + i*0.1 + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now + i*0.1);
+                osc.stop(now + i*0.1 + 0.4);
+            });
+        },
+        
+        playMatchFail() {
+            // Dissonant Low Buzz
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(100, this.ctx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.3);
+        },
+
+        playWin() {
+            // Fanfare
+            const now = this.ctx.currentTime;
+            // C4, E4, G4, C5
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.05, now + i*0.15);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + i*0.15 + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now + i*0.15);
+                osc.stop(now + i*0.15 + 0.4);
+            });
+        },
+        
+        playLose() {
+            // Sad descending
+            const now = this.ctx.currentTime;
+            [440, 415, 392, 370].forEach((freq, i) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, now + i*0.2);
+                gain.gain.linearRampToValueAtTime(0.01, now + i*0.2 + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now + i*0.2);
+                osc.stop(now + i*0.2 + 0.3);
+            });
+        }
+    };
+
     // --- Game State ---
     let state = {
         phase: 'SETUP', // 'SETUP', 'PLAY', 'MATCH_DECISION', 'GAME_OVER'
@@ -293,10 +389,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (state.phase === 'SETUP') {
             handleSetupClick(plateIndex);
+            SoundManager.playChip(); // Sound for hiding chips
         } else if (state.phase === 'PLAY') {
             handlePlayClick(plateIndex);
+            SoundManager.playClick(); // Sound for selecting plate
         } else if (state.phase === 'MATCH_DECISION') {
             handleMatchDecisionClick(plateIndex);
+            SoundManager.playChip(); // Sound for placing token
         }
     }
 
@@ -375,12 +474,15 @@ document.addEventListener('DOMContentLoaded', () => {
             state.matchedPlates = [idx1, idx2];
             state.isProcessingResult = false; 
             
+            SoundManager.playMatchSuccess(); // SOUND: Success
+            
             showModal(t('msg_match_success'), 
                 t('msg_match_success_desc').replace('{val}', val1),
                 null);
             updateUI(); 
         } else {
             // FAILURE
+            SoundManager.playMatchFail(); // SOUND: Fail
             showModal(t('msg_match_fail'), 
                 t('msg_match_fail_desc')
                     .replace('{val1}', val1)
@@ -448,6 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUI();
             if (state.timer <= 0) {
                 stopTimer();
+                SoundManager.playMatchFail(); // Timeout uses fail sound
                 showModal(t('msg_timeout'), t('msg_timeout_desc'), () => {
                     state.gameTokens[state.currentTurn]++;
                     
@@ -539,6 +642,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const loser = winner === 'A' ? 'B' : 'A';
             message = t('msg_lose_limit').replace('{loser}', loser).replace('{max}', MAX_GAME_TOKENS);
+        }
+
+        if (reason === 'WIN_ZERO') {
+            SoundManager.playWin();
+        } else {
+            SoundManager.playLose();
         }
 
         showModal(t('msg_game_over'), 
