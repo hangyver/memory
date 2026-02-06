@@ -233,11 +233,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             wrapper.style.transform = `translate(${x}px, ${y}px)`;
 
+            // Number Positioning (Radial Outward)
+            // Calculate offset based on angle
+            const numDist = 65; // Distance from plate center
+            const numRad = cssAngle * Math.PI / 180;
+            const numX = Math.cos(numRad) * numDist;
+            const numY = Math.sin(numRad) * numDist;
+
             const plate = document.createElement('div');
             plate.className = 'plate';
             plate.id = `plate-${i}`;
             plate.innerHTML = `
-                <span class="plate-lid-number">${i}</span>
+                <span class="plate-lid-number" style="transform: translate(-50%, -50%) translate(${numX}px, ${numY}px);">${i}</span>
                 <span class="plate-content" style="display:none;">0</span>
             `;
             
