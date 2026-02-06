@@ -158,9 +158,14 @@ body {
 }
 
 .plate-circle {
-    width: 600px;
-    height: 600px;
+    width: 70vh; /* Responsive size */
+    height: 70vh;
+    max-width: 600px;
+    max-height: 600px;
     position: relative;
+    /* Maintain aspect ratio */
+    min-width: 300px;
+    min-height: 300px;
 }
 
 /* --- Center Status Panel (New) --- */
@@ -486,7 +491,103 @@ body {
     padding-top: 20px;
 }
 
-#step-indicator {
-    color: #888;
-    font-family: 'Playfair Display', serif;
+/* --- Mobile Support --- */
+
+/* Portrait Warning */
+.rotate-warning {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #0d0d0d;
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.warning-content h2 {
+    color: var(--gold);
+    font-family: 'Gowun Dodum', sans-serif;
+    margin-bottom: 10px;
+}
+
+.warning-content p {
+    color: #aaa;
+    line-height: 1.5;
+}
+
+.phone-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-90deg); }
+    50% { transform: rotate(-90deg); }
+    75% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@media screen and (orientation: portrait) {
+    .rotate-warning {
+        display: flex;
+    }
+    .game-container {
+        display: none;
+    }
+}
+
+/* Mobile Landscape Tweaks */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .top-controls {
+        top: 10px;
+        right: 10px;
+    }
+    .control-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    .game-container {
+        width: 100%;
+        height: 100vh;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+    .player-area {
+        width: 120px;
+    }
+    .avatar-head {
+        width: 60px;
+        height: 60px;
+    }
+    .chip-count {
+        font-size: 1.5rem;
+    }
+    .plate-wrapper {
+        width: 60px;
+        height: 60px;
+        margin-left: -30px;
+        margin-top: -30px;
+    }
+    .plate {
+        width: 50px;
+        height: 50px;
+        border-width: 2px;
+    }
+    .plate-lid-number {
+        font-size: 1.5rem;
+        /* Adjust radial distance in JS if needed, but CSS scale might be easier */
+    }
+    .game-status {
+        width: 180px;
+        height: 180px;
+    }
+    .status-main {
+        font-size: 2rem;
+    }
 }

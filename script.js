@@ -218,7 +218,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initBoard() {
         plateCircle.innerHTML = '';
-        const radius = 250;
+        // Dynamic Radius Calculation
+        const containerSize = Math.min(plateCircle.clientWidth, plateCircle.clientHeight) || 600; // Fallback
+        const radius = (containerSize / 2) * 0.85; // Use 85% of half-size to leave padding
         const angleStep = 360 / TOTAL_PLATES;
 
         for (let i = 1; i <= TOTAL_PLATES; i++) {
@@ -234,8 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.style.transform = `translate(${x}px, ${y}px)`;
 
             // Number Positioning (Radial Outward)
-            // Calculate offset based on angle
-            const numDist = 65; // Distance from plate center
+            // Scale distance based on plate size/radius roughly
+            const numDist = radius * 0.28; // Relative distance
             const numRad = cssAngle * Math.PI / 180;
             const numX = Math.cos(numRad) * numDist;
             const numY = Math.sin(numRad) * numDist;
@@ -615,5 +617,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 lidEl.style.display = 'block';
             }
         }
+    }
+    
+    // Resize Handler for Responsive Board
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            updateBoardPositions();
+        }, 200);
+    });
+
+    function updateBoardPositions() {
+        const containerSize = Math.min(plateCircle.clientWidth, plateCircle.clientHeight) || 600;
+        const radius = (containerSize / 2) * 0.85; 
+        const angleStep = 360 / TOTAL_PLATES;
+        
+        const wrappers = document.querySelectorAll('.plate-wrapper');
+        wrappers.forEach((wrapper, index) => {
+            const i = index + 1;
+            const simpleAngle = (i * angleStep) - (angleStep / 2);
+            const cssAngle = simpleAngle - 90;
+            const x = Math.cos(cssAngle * Math.PI / 180) * radius;
+            const y = Math.sin(cssAngle * Math.PI / 180) * radius;
+            wrapper.style.transform = `translate(${x}px, ${y}px)`;
+
+            // Update Number Position
+            const numDist = radius * 0.28;
+            const numRad = cssAngle * Math.PI / 180;
+            const numX = Math.cos(numRad) * numDist;
+            const numY = Math.sin(numRad) * numDist;
+            const lidNum = wrapper.querySelector('.plate-lid-number');
+            if (lidNum) {
+                lidNum.style.transform = `translate(-50%, -50%) translate(${numX}px, ${numY}px)`;
+            }
+        });
     }
 });
