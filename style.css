@@ -45,25 +45,28 @@ body {
 /*Game Title */
 .main-title {
     position: absolute;
-    top: -80px; /* Position above the board area */
+    top: 5%; /* Moved down into view */
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
-    font-size: 3.5rem;
+    font-size: 4rem; /* Slightly larger */
     white-space: nowrap;
     z-index: 10;
     
     /* Default Korean Font */
     font-family: 'Do Hyeon', sans-serif;
     
-    /* Gradient Gold Text */
-    background: linear-gradient(to bottom, #ffd700, #b8860b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* Color Adjustment: White for contrast */
+    color: #ffffff;
+    text-shadow: 
+        3px 3px 0 #000, 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 20px rgba(255, 215, 0, 0.8); /* Gold Glow */
     
-    /* Impactful Shadow */
-    filter: drop-shadow(0 4px 0px rgba(0,0,0,0.8));
-    
+    pointer-events: none; /* Let clicks pass through */
     transition: all 0.3s ease;
 }
 
