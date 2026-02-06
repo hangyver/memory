@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --bg-color: #1a1a1a;
+    --grid-line: #333;
+    --player-a-color: #ff4444;
+    --player-b-color: #44ff44;
+    --text-color: white;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 50px 50px;
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+    position: relative;
+}
+
+/* Player Areas */
+.player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 200px;
+    z-index: 10;
+}
+
+.player-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.9;
+}
+
+.avatar-head {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    margin-bottom: 5px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.avatar-body {
+    width: 140px;
+    height: 100px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 20% 20% 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Black Ops One', cursive;
+    font-size: 3rem;
+    color: #000;
+}
+
+.player-a .avatar-head, .player-a .avatar-body {
+    background: linear-gradient(180deg, #ffcccc, #ff8888);
+    color: #300;
+}
+
+.player-b .avatar-head, .player-b .avatar-body {
+    background: linear-gradient(180deg, #ccffcc, #88ff88);
+    color: #030;
+}
+
+/* Chips */
+.chips-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chip-count {
+    font-family: 'Black Ops One', cursive;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.player-a .chip-count { color: var(--player-a-color); }
+.player-b .chip-count { color: var(--player-b-color); }
+
+.chip-stack {
+    display: flex;
+    flex-direction: column-reverse; /* Stack up */
+    gap: 2px;
+}
+
+.chip {
+    width: 40px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.5);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.5);
+}
+
+.red .chip { background: var(--player-a-color); }
+.green .chip { background: var(--player-b-color); }
+
+/* Board Area */
+.board-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%); /* Shift up slightly */
+    width: 600px;
+    height: 600px;
+    /* border: 1px dashed #555; debugging circle */
+}
+
+.plate-circle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.plate-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px; /* Plate width */
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Initial state, will be positioning in JS/inline-css */
+}
+
+.plate {
+    width: 60px;
+    height: 40px;
+    background: #e0e0e0;
+    border-radius: 50% 50% 0 0; /* Dome shape */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5), inset 0 5px 10px rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.plate:hover {
+    transform: scale(1.1);
+}
+
+.plate::after {
+    /* Handle */
+    content: '';
+    position: absolute;
+    top: -5px;
+    width: 10px;
+    height: 6px;
+    background: #ccc;
+    border-radius: 5px 5px 0 0;
+}
+
+.plate-number {
+    font-family: 'Black Ops One', cursive;
+    font-size: 1.2rem;
+    color: #333;
+    z-index: 2;
+    margin-top: 5px;
+}
