@@ -146,10 +146,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-close-btn').textContent = t('modal_confirm');
 
         // Font Adjustment
+        const titleEl = document.getElementById('game-title');
+        titleEl.textContent = t('title');
+
         if (currentLang === 'en') {
             document.body.classList.add('font-en');
+            titleEl.classList.add('font-en');
         } else {
             document.body.classList.remove('font-en');
+            titleEl.classList.remove('font-en');
         }
 
         updateUI(); // Refresh UI text

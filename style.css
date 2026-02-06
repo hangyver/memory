@@ -42,6 +42,38 @@ body {
     position: relative;
 }
 
+/*Game Title */
+.main-title {
+    position: absolute;
+    top: -80px; /* Position above the board area */
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: 3.5rem;
+    white-space: nowrap;
+    z-index: 10;
+    
+    /* Default Korean Font */
+    font-family: 'Do Hyeon', sans-serif;
+    
+    /* Gradient Gold Text */
+    background: linear-gradient(to bottom, #ffd700, #b8860b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Impactful Shadow */
+    filter: drop-shadow(0 4px 0px rgba(0,0,0,0.8));
+    
+    transition: all 0.3s ease;
+}
+
+/* English Title Font */
+.main-title.font-en {
+    font-family: 'Orbitron', sans-serif; /* Math/Sci-fi feel */
+    font-size: 2.8rem; /* Adjust for font size difference */
+    letter-spacing: 2px;
+}
+
 /* --- Player Areas --- */
 .player-area {
     display: flex;
@@ -544,6 +576,14 @@ body {
 
 /* Mobile Landscape Tweaks */
 @media screen and (max-height: 500px) and (orientation: landscape) {
+    .main-title {
+        font-size: 1.8rem;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        pointer-events: none; /* Let clicks pass through if it overlaps */
+        opacity: 0.8;
+    }
     .top-controls {
         top: 10px;
         right: 10px;
